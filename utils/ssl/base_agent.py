@@ -1,5 +1,6 @@
 from rsoccer_gym.Entities import Robot
 from utils.Point import Point
+from RRT import RRTStar
 
 class BaseAgent:
     """Abstract Agent."""
@@ -14,6 +15,8 @@ class BaseAgent:
         self.yellow = yellow
         self.opponents = dict()
         self.teammates = dict()
+        self.index = -1  #to control the index in the path
+        self.rrt = RRTStar #to make things easier
 
         self.next_vel = Point(0, 0)
         self.angle_vel = float(0)

@@ -40,7 +40,7 @@ class Navigation:
     return ((value - lLower) * (rHigher - rLower) / (lHigher - lLower) + rLower)
 
   @staticmethod
-  def goToPoint(robot: Robot, target: Point):
+  def goToPoint(robot: Robot, target: Point, final_target):
     target = Point(target.x * M_TO_MM, target.y * M_TO_MM)
     robot_position = Point(robot.x * M_TO_MM, robot.y * M_TO_MM)
     robot_angle = Navigation.degrees_to_radians(Geometry.normalize_angle(robot.theta, 0, 180))
@@ -50,7 +50,10 @@ class Navigation:
     kp = ANGLE_KP
 
     # Use proportional speed to decelerate when getting close to desired target
-    proportional_velocity_factor = PROP_VELOCITY_MIN_FACTOR
+    if final_target == False:
+      proportional_velocity_factor = 0.5
+    else:
+      proportional_velocity_factor = 0.1
     min_proportional_distance = MIN_DIST_TO_PROP_VELOCITY
 
     if distance_to_target <= min_proportional_distance:
