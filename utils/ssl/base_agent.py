@@ -15,8 +15,9 @@ class BaseAgent:
         self.yellow = yellow
         self.opponents = dict()
         self.teammates = dict()
-        self.index = -1  #to control the index in the path
+        self.current_index = -1  # wich node the robot tries to go
         self.rrt = RRTStar #to make things easier
+        self.collide = 0
 
         self.next_vel = Point(0, 0)
         self.angle_vel = float(0)

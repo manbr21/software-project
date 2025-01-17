@@ -42,7 +42,6 @@ class RRTStar:
             if self.reached_goal(new_node):
                 self.path = self.generate_final_path(new_node)
                 self.goal_reached = True
-                #print("ACHOU CAMINHO")
                 return
         
     def get_random_node(self):
@@ -105,7 +104,6 @@ class RRTStar:
         """Generate the final path from the start to the goal."""
         path = []
         node = goal_node
-        #print(goal_node.x, goal_node.y)
         while node is not None:
             path.append([node.x, node.y])
             node = node.parent
