@@ -53,9 +53,6 @@ class Navigation:
     proportional_velocity_factor = PROP_VELOCITY_MIN_FACTOR
     min_proportional_distance = MIN_DIST_TO_PROP_VELOCITY
 
-    if robot.id == 0 and robot.yellow == None: #to make smoother moves
-      proportional_velocity_factor = 0.4
-
     if distance_to_target <= min_proportional_distance:
       max_velocity = max_velocity * Navigation.map_value(distance_to_target, 0.0, min_proportional_distance, proportional_velocity_factor, 1.0)
 

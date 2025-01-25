@@ -46,6 +46,11 @@ class SSLExampleEnv(SSLBaseEnv):
         if field == 2:
             self.field_renderer = SSLHRenderField()
             self.window_size = self.field_renderer.window_size
+
+        # IMPLEMENTED
+        self.new_round = False
+        self.targets_occp = [0,0,0,0,0,0]
+        self.init = True
         
     def _frame_to_observations(self):
         ball, robot = self.frame.ball, self.frame.robots_blue[0]
@@ -65,11 +70,15 @@ class SSLExampleEnv(SSLBaseEnv):
         for j in range(len(self.targets) - 1, -1, -1):
             for i in self.my_agents:
                 if Point(self.frame.robots_blue[i].x, self.frame.robots_blue[i].y).dist_to(self.targets[j]) < self.min_dist:
-                    self.targets.pop(j)
+                    # Reached the desired target
+                    if self.my_agents[i].my_target == self.targets[j]:
+                        self.my_agents[i].my_target = None
+                        self.targets.pop(j)
                     break
         
         # Check if there are no more targets
         if len(self.targets) == 0:
+            self.new_round = True # New round
             self.rounds -= 1
 
         # Finish the phase and increase the number of targets for the next phase
@@ -112,6 +121,26 @@ class SSLExampleEnv(SSLBaseEnv):
                     random_target.append(Point(x=self.x(), y=self.y()))
 
                 others_actions.append(self.yellow_agents[i].step(self.frame.robots_yellow[i], obstacles, dict(), random_target, True))
+
+        # Map targets to teammates
+        if self.new_round or self.init: #every new round
+            self.targets_occp = [0,0,0,0,0,0]
+            for j in self.my_agents:
+                #ExampleAgent.choose_path(self.my_agents[i], self.targets_per_round)
+                target_index = -1
+                min_dist = float('inf')
+                for i in range(self.targets_per_round):
+                    dist = self.my_agents[j].pos.dist_to(self.my_agents[j].targets[i])
+                    if self.targets_occp[i] == 0 and dist < min_dist:
+                        min_dist = dist
+                        target_index = i
+                if target_index != -1:
+                    self.my_agents[j].my_target = self.targets[target_index]
+                    self.targets_occp[target_index] = 1
+                    
+            self.new_round = False
+            if self.init:
+                self.init = False
 
         return myActions + others_actions
 
